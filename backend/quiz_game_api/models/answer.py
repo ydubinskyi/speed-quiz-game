@@ -20,5 +20,6 @@ class Answer(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid4)
     content = Column(Text)
     active = Column(Boolean)
+    correct = Column(Boolean)
     question_id = Column(UUID, ForeignKey("question.id"))
     question = relationship("Question", back_populates="answers")

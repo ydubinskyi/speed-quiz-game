@@ -1,18 +1,21 @@
 from typing import Optional
 
 from pydantic import BaseModel, UUID4
-from quiz_game_api.schemas import question
 
 
 # Shared properties
 class AnswerBase(BaseModel):
+    question_id: Optional[UUID4] = None
     content: Optional[str] = None
     active: Optional[bool] = False
+    correct: Optional[bool] = False
 
 
 # Properties to receive via API on creation
 class AnswerCreate(AnswerBase):
+    question_id: UUID4
     content: str
+    correct: bool
 
 
 # Properties to receive via API on update
