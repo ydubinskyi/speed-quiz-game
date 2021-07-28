@@ -5,7 +5,7 @@ from pydantic import UUID4
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND
 
-from . import actions, schemas
+from . import crud, schemas
 from .db.session import SessionLocal
 
 # Create all tables in the database.
@@ -24,16 +24,11 @@ def get_db():
         db.close()
 
 
-@app.get("/")
-def index():
-    return {"message": "Hello world!"}
-
-
 @app.get("/questions", response_model=List[schemas.Question], tags=["questions"])
 def list_questions(
     db: Session = Depends(get_db), skip: int = 0, limit: int = 100
 ) -> Any:
-    question = actions.question.get_all(db=db, skip=skip, limit=limit)
+    question = crud.question.get_multi(db=db, skip=skip, limit=limit)
     return question
 
 
@@ -46,7 +41,7 @@ def list_questions(
 def create_question(
     *, db: Session = Depends(get_db), question_in: schemas.QuestionCreate
 ) -> Any:
-    question = actions.question.create(db=db, obj_in=question_in)
+    question = crud.question.create(db=db, obj_in=question_in)
     return question
 
 
@@ -61,10 +56,10 @@ def update_question(
     id: UUID4,
     question_in: schemas.QuestionUpdate,
 ) -> Any:
-    question = actions.question.get(db=db, id=id)
+    question = crud.question.get(db=db, id=id)
     if not question:
         raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Question not found")
-    question = actions.question.update(db=db, db_obj=question, obj_in=question_in)
+    question = crud.question.update(db=db, db_obj=question, obj_in=question_in)
     return question
 
 
@@ -74,7 +69,7 @@ def update_question(
     tags=["questions"],
 )
 def get_question(*, db: Session = Depends(get_db), id: UUID4) -> Any:
-    question = actions.question.get(db=db, id=id)
+    question = crud.question.get(db=db, id=id)
     if not question:
         raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Question not found")
     return question
@@ -86,8 +81,8 @@ def get_question(*, db: Session = Depends(get_db), id: UUID4) -> Any:
     tags=["questions"],
 )
 def delete_question(*, db: Session = Depends(get_db), id: UUID4) -> Any:
-    question = actions.question.get(db=db, id=id)
+    question = crud.question.get(db=db, id=id)
     if not question:
-        raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="question not found")
-    question = actions.question.remove(db=db, id=id)
+        raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Question not found")
+    question = crud.question.remove(db=db, id=id)
     return question
