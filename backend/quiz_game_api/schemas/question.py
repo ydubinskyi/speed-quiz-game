@@ -6,7 +6,7 @@ from pydantic import BaseModel, UUID4
 # Shared properties
 class QuestionBase(BaseModel):
     content: Optional[str] = None
-    is_active: Optional[bool] = False
+    active: Optional[bool] = False
 
 
 # Properties to receive via API on creation
@@ -16,7 +16,7 @@ class QuestionCreate(QuestionBase):
 
 # Properties to receive via API on update
 class QuestionUpdate(QuestionBase):
-    content: str
+    pass
 
 
 class QuestionInDBBase(QuestionBase):
