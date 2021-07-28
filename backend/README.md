@@ -10,14 +10,14 @@
 
 Install deps
 
-```
+```bash
 poetry shell
 poetry install
 ```
 
 Start docker container with Postgres and PGAdmin
 
-```
+```bash
 docker-compose up -d
 ```
 
@@ -27,13 +27,13 @@ Create `.env` file using `.env.example` and populate with DB config
 
 Run migrations
 
-```
+```bash
 alembic upgrade head
 ```
 
 Start application
 
-```
+```bash
 uvicorn quiz_game_api.main:app --reload
 ```
 
