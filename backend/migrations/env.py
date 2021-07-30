@@ -17,7 +17,7 @@ fileConfig(config.config_file_name)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from quiz_game_api.db import Base
+from app.db import Base
 
 target_metadata = Base.metadata
 
@@ -28,7 +28,7 @@ target_metadata = Base.metadata
 
 
 def get_url():
-    from quiz_game_api.config import settings
+    from app.config import settings
 
     user = settings.POSTGRES_USER
     password = settings.POSTGRES_PASSWORD

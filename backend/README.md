@@ -34,7 +34,7 @@ alembic upgrade head
 Start application
 
 ```bash
-uvicorn quiz_game_api.main:app --reload
+uvicorn app.main:app --reload
 ```
 
 Navigate to http://localhost:8000/docs
