@@ -21,5 +21,5 @@ class Answer(Base):
     content = Column(Text)
     active = Column(Boolean)
     correct = Column(Boolean)
-    question_id = Column(UUID, ForeignKey("question.id"))
+    question_id = Column(UUID(as_uuid=True), ForeignKey("question.id"))
     question = relationship("Question", back_populates="answers")

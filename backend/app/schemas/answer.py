@@ -13,7 +13,6 @@ class AnswerBase(BaseModel):
 
 # Properties to receive via API on creation
 class AnswerCreate(AnswerBase):
-    question_id: UUID4
     content: str
     correct: bool
 

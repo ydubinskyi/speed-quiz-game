@@ -1,6 +1,6 @@
 from typing import Any, List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, Path, HTTPException
 from pydantic import UUID4
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND
@@ -13,9 +13,15 @@ router = APIRouter()
 
 @router.get("/", response_model=List[schemas.Answer])
 def read_answers(
-    db: Session = Depends(deps.get_db), skip: int = 0, limit: int = 100
+    *,
+    db: Session = Depends(deps.get_db),
+    question_id: UUID4,
+    skip: int = 0,
+    limit: int = 100,
 ) -> Any:
-    answers = crud.answer.get_multi(db=db, skip=skip, limit=limit)
+    answers = crud.answer.get_multi_by_question(
+        db=db, question_id=question_id, skip=skip, limit=limit
+    )
     return answers
 
 
@@ -25,9 +31,14 @@ def read_answers(
     status_code=HTTP_201_CREATED,
 )
 def create_answer(
-    *, db: Session = Depends(deps.get_db), answer_in: schemas.AnswerCreate
+    *,
+    db: Session = Depends(deps.get_db),
+    question_id: UUID4,
+    answer_in: schemas.AnswerCreate,
 ) -> Any:
-    answer = crud.answer.create(db=db, obj_in=answer_in)
+    answer = crud.answer.create_with_question(
+        db=db, obj_in=answer_in, question_id=question_id
+    )
     return answer
 
 
@@ -52,7 +63,11 @@ def update_answer(
     "/{id}",
     response_model=schemas.Answer,
 )
-def read_answer(*, db: Session = Depends(deps.get_db), id: UUID4) -> Any:
+def read_answer(
+    *,
+    db: Session = Depends(deps.get_db),
+    id: UUID4,
+) -> Any:
     answer = crud.answer.get(db=db, id=id)
     if not answer:
         raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Answer not found")
@@ -63,7 +78,11 @@ def read_answer(*, db: Session = Depends(deps.get_db), id: UUID4) -> Any:
     "/{id}",
     response_model=schemas.Answer,
 )
-def delete_answer(*, db: Session = Depends(deps.get_db), id: UUID4) -> Any:
+def delete_answer(
+    *,
+    db: Session = Depends(deps.get_db),
+    id: UUID4,
+) -> Any:
     answer = crud.answer.get(db=db, id=id)
     if not answer:
         raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Answer not found")
